@@ -17,7 +17,7 @@ Designed with clean architecture principles, custom exception handling, and full
 
 ## 📁 Features
 
-- Create, Read, Update, Delete products
+- Create, Read, Update, and Delete products
 - Add and Decrement product stock
 - Custom 6-digit unique `ProductId` generation
 - Full audit fields: `CreatedBy`, `UpdatedBy`, `CreatedAt`, `UpdatedAt`
@@ -52,7 +52,7 @@ ProductSolution/
 ## 🛠️ Getting Started
 
 ### ✅ Prerequisites
-- Visual Studio 2022 or later
+- Visual Studio 2022
 - .NET 8 SDK
 - SQL Server (LocalDB is fine)
 
@@ -67,10 +67,6 @@ ProductSolution/
    Update-Database
    ```
 5. Run the application
-6. Open Swagger UI at:
-   ```
-   https://localhost:<port>/swagger
-   ```
 
 ---
 
@@ -86,7 +82,6 @@ ProductSolution/
 | PUT    | /api/products/decrement-stock/{id}/{qty}   | Decrease stock quantity         |
 | PUT    | /api/products/add-to-stock/{id}/{qty}      | Increase stock quantity         |
 
-> 🧼 Swagger input bodies are clean, thanks to DTO usage.
 
 ---
 
@@ -126,7 +121,6 @@ All exceptions are handled globally via middleware:
 ## 👏 Author
 
 Built and documented by someone who believes in clean architecture, testable services, and APIs that speak for themselves. ✨
-
 
 Built with ❤️ by a .NET Developer who knows clean code, clean APIs, and clean tests.
 
