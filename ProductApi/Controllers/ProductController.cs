@@ -2,6 +2,7 @@
 using ProductApi.DTOs;
 using ProductApi.Interfaces;
 using ProductApi.Models;
+using ProductApi.Responses;
 
 namespace ProductApi.Controllers
 {
@@ -18,42 +19,107 @@ namespace ProductApi.Controllers
 
         // GET: /api/products
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductQueryParameters query)
         {
-            var products = await _service.GetAllAsync();
-            return Ok(products);
+            var (items, totalCount) = await _service.GetAllProductAsync(query);
+
+            if (items == null || !items.Any())
+            {
+                var emptyResponse = new ApiPagedResponse<Product>(
+                    statusCode: 200,
+                    message: "No products found.",
+                    data: new List<Product>(),
+                    page: query.Page,
+                    pageSize: query.PageSize,
+                    totalCount: 0
+                );
+                return Ok(emptyResponse);
+            }
+
+            return Ok(new
+            {
+                data = items,
+                page = query.Page,
+                pageSize = query.PageSize,
+                totalCount = totalCount
+            });
         }
+
 
         // GET: /api/products/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(string id)
         {
-            var product = await _service.GetByIdAsync(id);
-            return product is null ? NotFound() : Ok(product);
+            var product = await _service.GetProductByIdAsync(id);
+
+            if (product == null)
+                return NotFound();
+
+            return Ok(product);
         }
 
         // POST: /api/products
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] BaseProductDto productDto)
         {
-            var created = await _service.CreateAsync(productDto);
-            return CreatedAtAction(nameof(GetProductById), new { id = created.ProductId }, created);
+            var product = await _service.CreateProductAsync(productDto);
+            var response = new ApiResponse<Product>(
+                statusCode: 201,
+                message: "Product created successfully.",
+                data: product
+            );
+
+            return StatusCode(201, response);
         }
 
         // PUT: /api/products/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(string id, [FromBody] BaseProductDto productDto)
         {
-            var updated = await _service.UpdateAsync(id, productDto);
-            return updated is null ? NotFound() : Ok(updated);
+            var product = await _service.UpdateProductAsync(id, productDto);
+            if (product == null)
+                return NotFound();
+
+            var response = new ApiResponse<Product>(
+                statusCode: 200,
+                message: "Product updated successfully.",
+                data: product
+            );
+
+            return Ok(response);
+        }
+
+        // PATCH: /api/products/{id}
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchProduct(string id, [FromBody] ProductPatchDto patchDto)
+        {
+            var product = await _service.PatchProductAsync(id, patchDto);
+            if (product == null)
+                return NotFound();
+
+            var response = new ApiResponse<Product>(
+                statusCode: 200,
+                message: "Product updated successfully.",
+                data: product
+            );
+
+            return Ok(response);
         }
 
         // DELETE: /api/products/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(string id)
         {
-            var deleted = await _service.DeleteAsync(id);
-            return deleted ? Ok() : NotFound();
+            var deleted = await _service.DeleteProductAsync(id);
+            if (!deleted)
+                return NotFound();
+
+            var response = new ApiResponse<object>(
+                statusCode: 200,
+                message: "Product deleted successfully."
+            );
+
+            return Ok(response);
         }
 
         // PUT: /api/products/decrement-stock/{id}/{quantity}
@@ -61,7 +127,15 @@ namespace ProductApi.Controllers
         public async Task<IActionResult> DecrementStock(string id, int quantity)
         {
             var success = await _service.DecrementStockAsync(id, quantity);
-            return success ? Ok() : BadRequest("Insufficient stock or product not found");
+            if (!success)
+                return BadRequest(new ApiResponse<object>(400, "Insufficient stock or product not found."));
+
+            var response = new ApiResponse<object>(
+                statusCode: 200,
+                message: "Stock decremented successfully."
+            );
+
+            return Ok(response);
         }
 
         // PUT: /api/products/add-to-stock/{id}/{quantity}
@@ -69,7 +143,15 @@ namespace ProductApi.Controllers
         public async Task<IActionResult> AddToStock(string id, int quantity)
         {
             var success = await _service.AddToStockAsync(id, quantity);
-            return success ? Ok() : NotFound();
+            if (!success)
+                return NotFound(new ApiResponse<object>(404, $"Product with ID {id} not found."));
+
+            var response = new ApiResponse<object>(
+                statusCode: 200,
+                message: "Stock added successfully."
+            );
+
+            return Ok(response);
         }
     }
 }

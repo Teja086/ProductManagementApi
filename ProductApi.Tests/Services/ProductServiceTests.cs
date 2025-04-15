@@ -34,7 +34,7 @@ namespace ProductApi.Tests.Services
             };
 
             // Act
-            var result = await service.CreateAsync(product);
+            var result = await service.CreateProductAsync(product);
 
             // Assert
             Assert.NotNull(result.ProductId);
@@ -58,7 +58,7 @@ namespace ProductApi.Tests.Services
             context.Products.Add(product);
             context.SaveChanges();
 
-            var result = await service.GetByIdAsync("123456");
+            var result = await service.GetProductByIdAsync("123456");
 
             Assert.NotNull(result);
             Assert.Equal("Test", result?.Name);
@@ -70,7 +70,7 @@ namespace ProductApi.Tests.Services
             var context = GetInMemoryDbContext(nameof(GetByIdAsync_ShouldReturnNull_IfNotExists));
             var service = new ProductService(context);
 
-            await Assert.ThrowsAsync<NotFoundException>(() => service.GetByIdAsync("notfound"));
+            await Assert.ThrowsAsync<NotFoundException>(() => service.GetProductByIdAsync("notfound"));
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace ProductApi.Tests.Services
             };
 
             // Act
-            var result = await service.UpdateAsync("111111", updatedDto);
+            var result = await service.UpdateProductAsync("111111", updatedDto);
 
             // Assert
             Assert.NotNull(result);
@@ -123,7 +123,7 @@ namespace ProductApi.Tests.Services
             var result = await service.AddToStockAsync("222222", 3);
 
             Assert.True(result);
-            var updated = await service.GetByIdAsync("222222");
+            var updated = await service.GetProductByIdAsync("222222");
             Assert.Equal(8, updated?.StockAvailable);
         }
 
@@ -164,7 +164,7 @@ namespace ProductApi.Tests.Services
             var result = await service.DecrementStockAsync("222222", 3);
 
             Assert.True(result);
-            var updated = await service.GetByIdAsync("222222");
+            var updated = await service.GetProductByIdAsync("222222");
             Assert.Equal(7, updated?.StockAvailable);
         }
     }

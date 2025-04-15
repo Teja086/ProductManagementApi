@@ -59,6 +59,9 @@ ProductSolution/
 ### 🧪 Setup & Run
 
 1. Clone the repository
+    ```bash
+    git clone https://github.com/Teja086/ProductManagementApi.git
+    ```
 2. Open the solution in Visual Studio
 3. Set `ProductApi` as the **Startup Project**
 4. Open **Package Manager Console**:
@@ -78,6 +81,7 @@ ProductSolution/
 | GET    | /api/products/{id}                         | Get product by ID               |
 | POST   | /api/products                              | Create a new product            |
 | PUT    | /api/products/{id}                         | Update an existing product      |
+| PATCH  | /api/products/{id}                         | Update an product partial       |
 | DELETE | /api/products/{id}                         | Delete a product                |
 | PUT    | /api/products/decrement-stock/{id}/{qty}   | Decrease stock quantity         |
 | PUT    | /api/products/add-to-stock/{id}/{qty}      | Increase stock quantity         |
@@ -120,8 +124,8 @@ All exceptions are handled globally via middleware:
 
 ## 👏 Author
 
-Built and documented by someone who believes in clean architecture, testable services, and APIs that speak for themselves. ✨
-
-Built with ❤️ by a .NET Developer who knows clean code, clean APIs, and clean tests.
+Created by [Tejakrishna Reddy V]  
+📧 [teja086.vennapusa@gmail.com]  
+🌐 [github.com/Teja086]
 
 ---
