@@ -21,7 +21,7 @@ namespace ProductApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductQueryParameters query)
         {
-            var (items, totalCount) = await _service.GetAllProductAsync(query);
+            var (items, totalCount, totalPages) = await _service.GetAllProductAsync(query);
 
             if (items == null || !items.Any())
             {
@@ -31,7 +31,8 @@ namespace ProductApi.Controllers
                     data: new List<Product>(),
                     page: query.Page,
                     pageSize: query.PageSize,
-                    totalCount: 0
+                    totalCount: 0,
+                    totalPages: 0
                 );
                 return Ok(emptyResponse);
             }
@@ -41,7 +42,8 @@ namespace ProductApi.Controllers
                 data = items,
                 page = query.Page,
                 pageSize = query.PageSize,
-                totalCount = totalCount
+                totalCount = totalCount,
+                totalPages = totalPages
             });
         }
 

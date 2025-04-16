@@ -19,13 +19,15 @@ public class ApiResponse<T>
         public int Page { get; set; }
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
+        public int TotalPages { get; set; }
 
-        public ApiPagedResponse(int statusCode, string message, List<T> data, int page, int pageSize, int totalCount)
+        public ApiPagedResponse(int statusCode, string message, List<T> data, int page, int pageSize, int totalCount, int totalPages)
             : base(statusCode, message, data)
         {
             Page = page;
             PageSize = pageSize;
             TotalCount = totalCount;
+            TotalPages = totalPages;
         }
     }
 }

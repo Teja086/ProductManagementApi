@@ -6,7 +6,7 @@ namespace ProductApi.Interfaces
     public interface IProductService
     {
         //Task<IEnumerable<Product>> GetAllProductAsync();
-        Task<(List<Product> Items, int TotalCount)> GetAllProductAsync(ProductQueryParameters query);
+        Task<(List<Product> Items, int TotalCount, int TotalPages)> GetAllProductAsync(ProductQueryParameters query);
         Task<Product?> GetProductByIdAsync(string id);
         Task<Product> CreateProductAsync(BaseProductDto product);
         Task<Product?> UpdateProductAsync(string id, BaseProductDto updatedProduct);

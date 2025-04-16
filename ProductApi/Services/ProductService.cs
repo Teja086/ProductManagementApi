@@ -17,18 +17,20 @@ namespace ProductApi.Services
             _context = context;
         }
 
-        public async Task<(List<Product>, int)> GetAllProductAsync(ProductQueryParameters query)
+        public async Task<(List<Product> Items, int TotalCount, int TotalPages)> GetAllProductAsync(ProductQueryParameters query)
         {
             var productsQuery = _context.Products.AsQueryable();
 
             var totalCount = await productsQuery.CountAsync();
+
+            int totalPages = (int)Math.Ceiling((double)totalCount / query.PageSize);
 
             var items = await productsQuery
                 .Skip((query.Page - 1) * query.PageSize)
                 .Take(query.PageSize)
                 .ToListAsync();
 
-            return (items, totalCount);
+            return (items, totalCount, totalPages);
         }
 
         public async Task<Product?> GetProductByIdAsync(string id)
